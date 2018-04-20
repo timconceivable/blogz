@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    
+<h2>NEW POST</h2>
+<form action="" method="POST">
+    <ul>
+        <li>
+            <textarea type='text' name="post-title" >{{title}}</textarea>
+        </li>
+        <li>
+            <textarea type='text' name="post-body" style="height:10rem">{{body}}</textarea>
+        </li>
+        <li>
+            <input type="submit" value="Save As Draft" formaction="draft" />
+            <input type="submit" value="Publish" formaction="publish" />
+        </li>
+    </ul>    
+</form>
+
+{% endblock %}

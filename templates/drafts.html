@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Saved Drafts</h2>
+    {% if blogs|length == 0 %}
+        <p>There are no drafts saved</p>
+        {% else %}
+        <ul>
+            {% for blog in blogs %}
+                <h3>{{blog.title}}</h3>
+                <p class="postbody">{{blog.body}}
+                    <form class="delete" method='POST' action="">
+                        <input type="hidden" name="blog-id" value="{{blog.id}}" />
+                        <input type="submit" value="trash" formaction="/deletedraft" />
+                        <input type="submit" value="Publish" formaction="/publishdraft" />
+                    </form>
+                </p>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+{% endblock %}

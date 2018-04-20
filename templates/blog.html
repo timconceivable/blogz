@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ owner.username }} says...</h2>
+    {% if blogs|length == 0 %}
+        <p>This blog has no posts yet</p>
+        {% else %}
+        <ul>
+            {% for blog in blogs %}
+                <h3>{{blog.title}}</h3>
+                <p class="postbody">{{blog.body}}
+                    <form class="delete" method='POST' action='/deletepost'>
+                        <input type="hidden" name="blog-id" value="{{blog.id}}" />
+                        <input type="submit" value="Trash it" />
+                    </form>
+                </p>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+{% endblock %}
