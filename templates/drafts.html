@@ -7,7 +7,7 @@
         {% else %}
         <ul>
             {% for blog in blogs %}
-                <h3>{{blog.title}}</h3>
+                <a href={{/blog.id}}><h3>{{blog.title}}</h3></a>
                 <p class="postbody">{{blog.body}}
                     <form class="delete" method='POST' action="">
                         <input type="hidden" name="blog-id" value="{{blog.id}}" />

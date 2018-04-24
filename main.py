@@ -109,6 +109,10 @@ def drafts():
 
 # TODO make an html template to display individual posts
 # TODO make a route for this so that route('/blog?id=#')
+@app.route('/blog')
+def blogpost():
+    id = request.args.get('blog-id')
+    return redirect('/blog')
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
@@ -126,7 +130,7 @@ def publish():
         db.session.add(blog)
         db.session.commit()
         flash('Post published', 'confirm')
-        return redirect('/')
+        return redirect('/blog')
     else:
         flash('Please fill in all fields', 'error')
         return render_template('/newpost.html', 

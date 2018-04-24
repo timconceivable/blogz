@@ -7,13 +7,15 @@
         {% else %}
         <ul>
             {% for blog in blogs %}
-                <h3>{{blog.title}}</h3>
+                <a href="/blog"><h3>{{blog.title}}</h3></a>
+                <article>
                 <p class="postbody">{{blog.body}}
                     <form class="delete" method='POST' action='/deletepost'>
                         <input type="hidden" name="blog-id" value="{{blog.id}}" />
                         <input type="submit" value="Trash it" />
                     </form>
                 </p>
+                </article>
             {% endfor %}
         </ul>
     {% endif %}
