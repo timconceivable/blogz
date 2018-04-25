@@ -1,5 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import asc, desc
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -9,18 +11,23 @@ db = SQLAlchemy(app)
 app.secret_key = 'cornflakes'
 
 
-class Blog(db.Model):
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.Text)
     published = db.Column(db.Boolean)
+    date = db.Column(db.DateTime)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, body, published, owner):
+    def __init__(self, title, body, published, date, owner):
         self.title = title
         self.body = body
         self.published = published
+        self.date = date
         self.owner = owner
+
+    def __repr__(self):
+        return '<Post %r>' % self.title
 
 
 class User(db.Model):
@@ -28,7 +35,7 @@ class User(db.Model):
     username = db.Column(db.String(120), unique=True)
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
-    blog = db.relationship('Blog', backref='owner')
+    post = db.relationship('Post', backref='owner')
 
     def __init__(self, username, email, password):
         self.username = username
@@ -67,7 +74,7 @@ def register():
         else:
             flash('User already exists', 'error')
     
-    return render_template('register.html')
+    return render_template('register.html', pagetitle="register")
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -83,7 +90,7 @@ def login():
         else:
             flash('Password incorrect or user does not exist', 'error')
 
-    return render_template('login.html')
+    return render_template('login.html', pagetitle="login")
 
 
 @app.route('/logout')
@@ -93,30 +100,38 @@ def logout():
     return redirect('/')
 
 
+# MAIN BLOG PAGE
 @app.route('/', methods=['POST', 'GET'])
 def index():
     owner = User.query.filter_by(email=session['email']).first()
-    blogs = Blog.query.filter_by(published=True,owner=owner).all()
-    return render_template('blog.html', owner=owner, blogs=blogs)
+    posts = Post.query.filter_by(published=True,owner=owner).order_by(desc(Post.date)).all()
+    blogname = str(owner.username)+"'s blog"
+    return render_template('blog.html', pagetitle=blogname,
+        owner=owner, posts=posts)
 
 
 @app.route('/drafts', methods=['POST', 'GET'])
 def drafts():
     owner = User.query.filter_by(email=session['email']).first()
-    blogs = Blog.query.filter_by(published=False,owner=owner).all()
-    return render_template('drafts.html', blogs=blogs)
+    posts = Post.query.filter_by(published=False,owner=owner).all()
+    return render_template('drafts.html', pagetitle="saved drafts", 
+        owner=owner, posts=posts)
 
 
-# TODO make an html template to display individual posts
-# TODO make a route for this so that route('/blog?id=#')
-@app.route('/blog')
+# INDIVIDUAL POST PAGE
+@app.route('/blog', methods=['POST', 'GET'])
 def blogpost():
-    id = request.args.get('blog-id')
-    return redirect('/blog')
+    owner = User.query.filter_by(email=session['email']).first()
+    post_id = request.args.get('id')
+    post = Post.query.get(post_id)
+    return render_template('blogpost.html', pagetitle=post.title, 
+        owner=owner, post=post)
+
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
-    return render_template('newpost.html')
+    owner = User.query.filter_by(email=session['email']).first()
+    return render_template('newpost.html', pagetitle="new post", owner=owner)
 
 
 @app.route('/publish', methods=['POST'])
@@ -126,15 +141,17 @@ def publish():
     body = request.form['post-body']
     if title != "" and body != "":
         published = True
-        blog = Blog(title, body, published, owner)
-        db.session.add(blog)
+        date = datetime.utcnow()
+        post = Post(title, body, published, date, owner)
+        db.session.add(post)
         db.session.commit()
         flash('Post published', 'confirm')
-        return redirect('/blog')
+        return render_template("blogpost.html", 
+            pagetitle=title, owner=owner, post=post)
     else:
         flash('Please fill in all fields', 'error')
         return render_template('/newpost.html', 
-            title=title, body=body, owner=owner)
+            pagetitle=title, body=body, owner=owner)
 
 
 @app.route('/draft', methods=['POST'])
@@ -142,20 +159,28 @@ def draft():
     owner = User.query.filter_by(email=session['email']).first()
     title = request.form['post-title']
     body = request.form['post-body']
-    published = False
-    blog = Blog(title, body, published, owner)
-    db.session.add(blog)
-    db.session.commit()
-    flash('Draft Saved', 'confirm')
-    return redirect('/')
+    if title != "" and body != "":
+        published = False
+        date = None
+        post = Post(title, body, published, date, owner)
+        db.session.add(post)
+        db.session.commit()
+        flash('Draft Saved', 'confirm')
+        return render_template("blogpost.html", 
+            pagetitle=title, owner=owner, post=post)
+    else:
+        flash('Please fill in all fields', 'error')
+        return render_template('/newpost.html', 
+            pagetitle=title, body=body, owner=owner)
 
 
 @app.route('/publishdraft', methods=['POST'])
 def publishdraft():
-    blog_id = int(request.form['blog-id'])
-    blog = Blog.query.get(blog_id)
-    blog.published = True
-    db.session.add(blog)
+    post_id = int(request.form['id'])
+    post = Post.query.get(post_id)
+    post.published = True
+    post.date = datetime.utcnow()
+    db.session.add(post)
     db.session.commit()
     flash('Draft published!', 'confirm')
     return redirect('/drafts')
@@ -163,9 +188,9 @@ def publishdraft():
 
 @app.route('/deletepost', methods=['POST'])
 def delete_post():
-    blog_id = int(request.form['blog-id'])
-    blog = Blog.query.get(blog_id)
-    db.session.delete(blog)
+    post_id = int(request.form['id'])
+    post = Post.query.get(post_id)
+    db.session.delete(post)
     db.session.commit()
     flash('Post deleted!', 'confirm')
     return redirect('/')
@@ -173,9 +198,9 @@ def delete_post():
 
 @app.route('/deletedraft', methods=['POST'])
 def delete_draft():
-    blog_id = int(request.form['blog-id'])
-    blog = Blog.query.get(blog_id)
-    db.session.delete(blog)
+    post_id = int(request.form['id'])
+    post = Post.query.get(post_id)
+    db.session.delete(post)
     db.session.commit()
     flash('Draft deleted!', 'confirm')
     return redirect('/drafts')

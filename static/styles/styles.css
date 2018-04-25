@@ -1,0 +1,138 @@
+body {
+    background-color: lightgrey;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    color: slategray;
+    width: 70%;
+    margin: 1rem auto 0;
+}
+header {
+    background-color: rgb(114, 134, 165);
+    padding: 1rem;
+    margin: 0;
+    border-radius: 2rem 2rem 0 0;
+    text-align: center;
+}
+footer {
+    background-color: rgb(114, 134, 165);
+    padding: 1rem;
+    margin: 10rem 0 0;
+    border-radius: 2rem 2rem 0 0;
+    text-align: center;
+}
+a {
+    color: lightsalmon;
+    text-decoration: none;
+}
+a :hover {
+    color: orange;
+}
+header a :hover {
+    color: orange;
+}
+header h1 a {
+    color: rgb(255, 203, 106);
+}
+header h1 a :hover {
+    color: orange;
+}
+article {
+    display: block;
+    margin: 0 0 4rem 0;
+}
+h1 {
+    font-size: 4rem;
+    font-weight: 900;
+}
+h2 {
+    font-size: 2rem;
+    padding: 1rem;
+    margin: 0;
+}
+article h2 {
+    display: block;
+    font-size: 2.5rem;
+    background-color: cadetblue;
+    border-radius: 0 0 1rem 1rem;
+    padding: 2rem 2rem .5rem 2rem;
+    margin: 0;
+}
+h3 {
+    font-size: 1rem;
+}
+.hr {
+    background-color: rgb(219, 174, 157);
+    height: 2rem;
+    max-width: 100%;
+    padding: .5rem;
+    text-align: center;
+    align-content: center;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+header ul li {
+    display: inline;
+    margin-left: 2rem;
+}
+form {
+    background-color: rgb(177, 196, 197);
+    border-radius: 0 0 1rem 1rem;
+    align-content: center;
+    padding: .5rem 1rem;
+    margin: 0;
+}
+input[type=submit] {
+    background-color: rgb(177, 196, 197);
+    border: none;
+    color: orangered;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
+#publish {
+    color: rgb(0, 177, 0);
+}
+form li {
+    margin: .5rem;
+}
+.postbody {
+    background-color: beige;
+    border-radius: 0 1rem 1rem 1rem;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    padding: 1rem;
+    margin: 0 2rem;
+}
+.date {
+    display: inline;
+    color: gray;
+    font-size: .7rem;
+    margin: 0 4rem;
+}
+.delete {
+    display: inline;
+    position: absolute;
+    right: 20%;
+    margin: 0 1rem;
+}
+textarea {
+    resize: none;
+    margin: 1rem 0;
+}
+#title-form {
+    height: 1.2rem;
+    width: 90%;
+}
+#body-form {
+    height: 11rem;
+    width: 90%;
+}
+.error {
+    color: orangered;
+}
+.confirm {
+    color: slateblue;
+}
