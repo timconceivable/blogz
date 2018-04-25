@@ -5,7 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:bloggy@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:bloggy@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'cornflakes'
@@ -46,13 +46,13 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login','register']
+    allowed_routes = ['login','signup']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
 
 
-@app.route('/register', methods=['POST', 'GET'])
-def register():
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -60,7 +60,7 @@ def register():
         verify = request.form['verify']
         if username == "" or email == "" or password == "":
             flash('Please fill in all fields', 'error')
-            return render_template('register.html', 
+            return render_template('signup.html', 
                 username=username, email=email)
         
         existing_user = User.query.filter_by(email=email).first()
@@ -74,7 +74,7 @@ def register():
         else:
             flash('User already exists', 'error')
     
-    return render_template('register.html', pagetitle="register")
+    return render_template('signup.html', pagetitle="signup")
 
 
 @app.route('/login', methods=['POST', 'GET'])

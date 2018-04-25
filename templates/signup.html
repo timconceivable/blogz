@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Enter yo Deets to Register!</h1>
+<h1>Enter yo Deets to Sign up!</h1>
 <p>already registered?  <a href='/login'>login here!</a></p>
-<form action="/register" method="post">
+<form action="/signup" method="post">
     <table>
         <tr>
             <td><label for="username">Username</label></td>
@@ -30,6 +30,6 @@
             </td>
         </tr>
     </table>
-    <input type="submit" value="Register">
+    <input type="submit" value="Sign up!">
 </form>
 {% endblock %}
