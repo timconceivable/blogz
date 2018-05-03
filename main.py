@@ -43,12 +43,19 @@ class User(db.Model):
         self.password = password
 
 
+users = User.query.all()
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login','signup']
+    allowed_routes = ['login','signup','index','userblog','static']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
+
+
+#@app.before_request
+#def users():
+#    users = User.query.all()
+#    return users
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -61,7 +68,7 @@ def signup():
         if username == "" or email == "" or password == "":
             flash('Please fill in all fields', 'error')
             return render_template('signup.html', 
-                username=username, email=email)
+                username=username, email=email, owner="")
         
         existing_user = User.query.filter_by(email=email).first()
         if not existing_user:
@@ -74,7 +81,8 @@ def signup():
         else:
             flash('User already exists', 'error')
     
-    return render_template('signup.html', pagetitle="signup")
+    return render_template('signup.html', pagetitle="signup", 
+        users=users, owner="")
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -90,7 +98,8 @@ def login():
         else:
             flash('Password incorrect or user does not exist', 'error')
 
-    return render_template('login.html', pagetitle="login")
+    return render_template('login.html', pagetitle="login", 
+        users=users, owner="")
 
 
 @app.route('/logout')
@@ -100,14 +109,39 @@ def logout():
     return redirect('/')
 
 
-# MAIN BLOG PAGE
+# OPTIONAL STUFF:
+# TODO flash messages as popup that can be cleared manually
+# TODO 'EDIT POST' option
+# TODO add pagination! (max 7 posts)
+# TODO hashing passwords
+# TODO cookies
+
+
+# MAIN PAGE -- DISPLAYS POSTS FROM ALL USERS
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    owner = User.query.filter_by(email=session['email']).first()
-    posts = Post.query.filter_by(published=True,owner=owner).order_by(desc(Post.date)).all()
-    blogname = str(owner.username)+"'s blog"
-    return render_template('blog.html', pagetitle=blogname,
-        owner=owner, posts=posts)
+    if 'email' in session:
+        owner = User.query.filter_by(email=session['email']).first()
+    else:
+        owner = ""
+    posts = Post.query.filter_by(published=True).order_by(desc(Post.date)).all()
+    return render_template('index.html', pagetitle="Blogz",
+        users=users, owner=owner, posts=posts)
+
+
+# INDIVIDUAL USER PAGE -- DISPLAYS POSTS FROM INDIVIDUAL USER
+@app.route('/user', methods=['POST', 'GET'])
+def userblog():
+    if 'email' in session:
+        owner = User.query.filter_by(email=session['email']).first()
+    else:
+        owner = ""
+    user_id = request.args.get('id')
+    user = User.query.get(user_id)
+    posts = Post.query.filter_by(published=True,owner=user).order_by(desc(Post.date)).all()
+    blogname = str(user)+"'s blog"
+    return render_template('blog.html', pagetitle=blogname, 
+        user=user, users=users, owner=owner, posts=posts)
 
 
 @app.route('/drafts', methods=['POST', 'GET'])
@@ -115,25 +149,27 @@ def drafts():
     owner = User.query.filter_by(email=session['email']).first()
     posts = Post.query.filter_by(published=False,owner=owner).all()
     return render_template('drafts.html', pagetitle="saved drafts", 
-        owner=owner, posts=posts)
+        users=users, owner=owner, posts=posts)
 
 
-# INDIVIDUAL POST PAGE
-@app.route('/blog', methods=['POST', 'GET'])
+# RENDERS INDIVIDUAL POST
+@app.route('/post', methods=['POST', 'GET'])
 def blogpost():
     owner = User.query.filter_by(email=session['email']).first()
     post_id = request.args.get('id')
     post = Post.query.get(post_id)
-    return render_template('blogpost.html', pagetitle=post.title, 
-        owner=owner, post=post)
+    return render_template('post.html', pagetitle=post.title, 
+        users=users, owner=owner, post=post)
 
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
     owner = User.query.filter_by(email=session['email']).first()
-    return render_template('newpost.html', pagetitle="new post", owner=owner)
+    return render_template('newpost.html', pagetitle="new post", 
+        users=users, owner=owner)
 
 
+# PUBLISHES A NEW POST
 @app.route('/publish', methods=['POST'])
 def publish():
     owner = User.query.filter_by(email=session['email']).first()
@@ -146,12 +182,12 @@ def publish():
         db.session.add(post)
         db.session.commit()
         flash('Post published', 'confirm')
-        return render_template("blogpost.html", 
-            pagetitle=title, owner=owner, post=post)
+        return render_template("post.html", 
+            pagetitle=title, users=users, owner=owner, post=post)
     else:
         flash('Please fill in all fields', 'error')
         return render_template('/newpost.html', 
-            pagetitle=title, body=body, owner=owner)
+            pagetitle=title, users=users, body=body, owner=owner)
 
 
 @app.route('/draft', methods=['POST'])
@@ -166,12 +202,12 @@ def draft():
         db.session.add(post)
         db.session.commit()
         flash('Draft Saved', 'confirm')
-        return render_template("blogpost.html", 
-            pagetitle=title, owner=owner, post=post)
+        return render_template("post.html", pagetitle=title, 
+            users=users, owner=owner, post=post)
     else:
         flash('Please fill in all fields', 'error')
         return render_template('/newpost.html', 
-            pagetitle=title, body=body, owner=owner)
+            pagetitle=title, users=users, body=body, owner=owner)
 
 
 @app.route('/publishdraft', methods=['POST'])

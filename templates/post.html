@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <article>
+        <h2>{{post.title}}</h2>
+        <div class="postbody">
+            <p class="postowner">{{post.owner.username}}</p>
+            {% if post.published == True %}
+                <p class="postinfo">{{post.date}}</p>
+            {% endif %}
+            <p>{{post.body}}</p>
+            {% if owner == post.owner %}
+                <form class="button" method='POST' action='/deletepost'>
+                    <input type="hidden" name="id" value="{{post.id}}" />
+                    <input type="submit" value="Trash it" />
+                    {% if post.published == False %}
+                        <input id="publish" type="submit" value="  Publish" formaction="/publishdraft" />
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </article>
+{% endblock %}

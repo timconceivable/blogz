@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <article><a name="top"></a>
+    {% if posts|length == 0 %}
+        <p class="postbody">This blog has no posts yet.  <a href='/newpost'>Make the first one now!</a></p>
+        {% else %}
+            {% for post in posts %}
+                <a href="/post?id={{post.id}}"><h2>{{post.title}}</h2></a> 
+                <div class="postbody">
+                    <p class="postinfo">posted by <a href='/user?id={{post.owner.id}}' class="postowner">{{post.owner.username}}</a></p>
+                    <p class="postinfo">{{post.date}}</p>
+                    <p>{{post.body}}</p>
+                    {% if owner == post.owner %}
+                    <form class="button" method='POST' action='/deletepost'>
+                        <input type="hidden" name="id" value="{{post.id}}" />
+                        <input type="submit" value="Trash it" />
+                        {% if post.published == False %}
+                            <input id="publish" type="submit" value="  Publish" formaction="/publishdraft" />
+                        {% endif %}
+                    </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+    {% endif %}
+    </article>
+    
+    <footer><a name="footer"></a>
+        <p><a href="#top">back to top</a></p>
+    </footer>
+
+{% endblock %}

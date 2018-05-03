@@ -1,23 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Saved Drafts</h2>
+<article>
+    <h1>Saved Drafts</h1>
     {% if posts|length == 0 %}
-        <p class="postbody">There are no drafts saved</p>
+        <p>There are no drafts saved</p>
     {% else %}
-        <ul>
         {% for post in posts %}
-        <article>
-            <a href="/blog?id={{post.id}}"><h2>{{post.title}}</h2></a>
-            <p class="postbody">{{post.body}}</p>
-            <form class="delete" method='POST' action="">
-                <input type="hidden" name="id" value="{{post.id}}" />
-                <input type="submit" value="Trash it" formaction="/deletedraft" />
-                <input id="publish" type="submit" value="Publish" formaction="/publishdraft" />
-            </form>
-        </article>
+            <div class="postbody">
+                <a href="/blog?id={{post.id}}"><h2>{{post.title}}</h2></a>
+                <p class="postbody">{{post.body}}</p>
+                <form class="button" method='POST' action="">
+                    <input type="hidden" name="id" value="{{post.id}}" />
+                    <input type="submit" value="Trash it" formaction="/deletedraft" />
+                    <input id="publish" type="submit" value="Publish" formaction="/publishdraft" />
+                </form>
+            </div>
         {% endfor %}
-        </ul>
     {% endif %}
-    
+</article>
 {% endblock %}

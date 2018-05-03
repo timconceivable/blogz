@@ -1,21 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
-<h2>NEW POST</h2>
-<form method="POST">
-    <ul>
-        <li>
-            <textarea id="title-form" type='text' name="post-title" >{{title}}</textarea>
-        </li>
-        <li>
-            <textarea id="body-form" type='text' name="post-body" >{{body}}</textarea>
-        </li>
-        <li>
-            <input type="submit" value="Save As Draft" formaction="draft" />
-            <input id="publish" type="submit" value="Publish" formaction="publish" />
-        </li>
-    </ul>    
-</form>
-
+<article>
+    <h1>New Post</h1>
+    <div class=postbody >
+        <form method="POST">
+            <textarea id="title-form" type='text' 
+                name="post-title" value="{{title}}" >{{title}}</textarea>
+             <textarea id="body-form" type='text' 
+                name="post-body" value="{{body}}" >{{body}}</textarea>
+                <input type="submit" value="Save As Draft" formaction="draft" />
+                <input id="publish" type="submit" value="  Publish" formaction="publish" />    
+        </form>
+    </div>
+</article>
 {% endblock %}

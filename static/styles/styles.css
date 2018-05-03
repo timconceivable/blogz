@@ -1,122 +1,194 @@
 body {
-    background-color: lightgrey;
+    background-color: white;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    color: slategray;
-    width: 70%;
-    margin: 1rem auto 0;
-}
-header {
-    background-color: rgb(114, 134, 165);
-    padding: 1rem;
-    margin: 0;
-    border-radius: 2rem 2rem 0 0;
-    text-align: center;
-}
-footer {
-    background-color: rgb(114, 134, 165);
-    padding: 1rem;
-    margin: 10rem 0 0;
-    border-radius: 2rem 2rem 0 0;
-    text-align: center;
+    color: rgb(50,50,50);
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
 }
 a {
-    color: lightsalmon;
+    color: orange;
     text-decoration: none;
 }
 a :hover {
+    color: lightsalmon;
+}
+
+
+/* <<<<<<<<<<<<<<<<<< HEADER STYLES >>>>>>>>>>>>>>>>> */
+header {
+    position: sticky;
+    top: 0;
+    background-color: rgb(50,50,50);
+    padding: 1rem;
+    margin: 0;
+    border-radius: 0;
+    text-align: center;
+}
+nav {
+    overflow: hidden;
+    background-color: rgb(50,50,50);
+    color: white;
+}
+nav a {
+    float: left;
+    color: white;
+    text-align: center;
+    font-size: 1rem;
+    padding: .5rem 1rem;
+    margin: 0;
+    text-decoration: none;
+}
+.user {
+    float: right;
     color: orange;
 }
-header a :hover {
-    color: orange;
+.user:hover {
+    color: white;
 }
-header h1 a {
-    color: rgb(255, 203, 106);
+.dropdown {
+    float: left;
+    overflow: hidden;
+
 }
-header h1 a :hover {
-    color: orange;
+.dropdown .dropbutton {
+    float: left;
+    overflow: hidden;
+    background-color: inherit;
+    padding: .5rem 1rem;
+    margin: 0;
+    font-family: inherit;
+    color: inherit;
+    font-size: inherit;
+    border: none;
+    outline: none;
 }
+nav a:hover, .dropdown:hover .dropbutton {
+    background-color: orange;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    min-width: 8rem;
+    z-index: 1;
+    background-color: orange;
+}
+.dropdown-content a {
+    float: none;
+    display: block;
+    padding: .5rem 1rem;
+    color: white;
+    text-align: left;
+    text-decoration: none;
+}
+.dropdown-content a:hover {
+    background-color: orange;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.messagebar {
+    height: 2rem;
+    max-width: 100%;
+    padding: .5rem;
+    margin: 0 0 .5rem 0;
+    text-align: center;
+    vertical-align: middle;
+}
+.error {
+    color: orangered;
+}
+.confirm {
+    color: slateblue;
+}
+
+
+/* <<<<<<<<<<<<<<<<<< ARTICLE STYLES >>>>>>>>>>>>>>>>> */
 article {
     display: block;
-    margin: 0 0 4rem 0;
+    max-width: 70%;
+    min-width: 20rem;
+    margin-left: 10%;
 }
 h1 {
     font-size: 4rem;
     font-weight: 900;
+    padding: .5rem;
+    margin: 0;
 }
 h2 {
+    display: block;
     font-size: 2rem;
-    padding: 1rem;
+    padding: .5rem 1rem;
     margin: 0;
 }
 article h2 {
-    display: block;
-    font-size: 2.5rem;
-    background-color: cadetblue;
-    border-radius: 0 0 1rem 1rem;
-    padding: 2rem 2rem .5rem 2rem;
-    margin: 0;
+    background-color: gray;
 }
 h3 {
     font-size: 1rem;
-}
-.hr {
-    background-color: rgb(219, 174, 157);
-    height: 2rem;
-    max-width: 100%;
     padding: .5rem;
-    text-align: center;
-    align-content: center;
-}
-ul {
-    list-style-type: none;
     margin: 0;
-    padding: 0;
 }
-header ul li {
+a {
+    color: orange;
+    text-decoration: none;
+}
+p {
+    margin-left: .5rem;
+}
+
+
+/* <<<<<<<<<<<<<<<<<< POST STYLES >>>>>>>>>>>>>>>>> */
+.postbody {
+    background-color: whitesmoke;
+    border-radius: 0;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    padding: 1rem 2rem;
+    margin: 0 0 2rem 1rem;
+}
+
+.postinfo, .postowner {
     display: inline;
-    margin-left: 2rem;
+    color: gray;
+    font-size: .7rem;
+    padding: 0 .5rem;
+    margin: 0;
 }
+.postowner {
+    color: orange;
+    font-weight: bold;
+}
+
+
+/* <<<<<<<<<<<<<<<<<< FORM STYLES >>>>>>>>>>>>>>>>> */
 form {
-    background-color: rgb(177, 196, 197);
-    border-radius: 0 0 1rem 1rem;
+    background-color: whitesmoke;
+    border-radius: 0;
     align-content: center;
     padding: .5rem 1rem;
     margin: 0;
 }
+.button {
+    float: right;
+    margin: -2rem -1rem 0 0;
+}
 input[type=submit] {
-    background-color: rgb(177, 196, 197);
+    background-color: whitesmoke;
     border: none;
     color: orangered;
     text-align: center;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: .8rem;
+    padding: .5rem;
 }
 #publish {
-    color: rgb(0, 177, 0);
+    color: green;
 }
 form li {
-    margin: .5rem;
-}
-.postbody {
-    background-color: beige;
-    border-radius: 0 1rem 1rem 1rem;
-    overflow-wrap: break-word;
-    text-overflow: ellipsis;
-    padding: 1rem;
-    margin: 0 2rem;
-}
-.date {
-    display: inline;
-    color: gray;
-    font-size: .7rem;
-    margin: 0 4rem;
-}
-.delete {
-    display: inline;
-    position: absolute;
-    right: 20%;
-    margin: 0 1rem;
+    padding: .5rem 1rem;
 }
 textarea {
     resize: none;
@@ -130,9 +202,15 @@ textarea {
     height: 11rem;
     width: 90%;
 }
-.error {
-    color: orangered;
-}
-.confirm {
-    color: slateblue;
+
+
+/* <<<<<<<<<<<<<<<<<< FOOTER STYLES >>>>>>>>>>>>>>>>> */
+footer {
+    background-color: rgb(50,50,50);
+    position: relative;
+    bottom: 0;
+    padding: 1rem;
+    margin: 4rem 0 0 0;
+    border-radius: 0;
+    text-align: center;
 }
