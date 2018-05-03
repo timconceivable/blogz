@@ -9,6 +9,7 @@
             {% for post in posts %}
                 <a href="/post?id={{post.id}}"><h2>{{post.title}}</h2></a> 
                 <div class="postbody">
+                    <p class="postinfo">posted by <a href='/user?id={{post.owner.id}}' class="postowner">{{post.owner.username}}</a></p>
                     <p class="postinfo">{{post.date}}</p>
                     <p>{{post.body}}</p>
                     {% if owner == post.owner %}

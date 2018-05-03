@@ -47,15 +47,10 @@ users = User.query.all()
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login','signup','index','userblog','static']
+    allowed_routes = ['login','signup','index','userblog','blogpost','static']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
 
-
-#@app.before_request
-#def users():
-#    users = User.query.all()
-#    return users
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -81,12 +76,14 @@ def signup():
         else:
             flash('User already exists', 'error')
     
+    users = User.query.all()
     return render_template('signup.html', pagetitle="signup", 
         users=users, owner="")
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    users = User.query.all()
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -106,6 +103,7 @@ def login():
 def logout():
     del session['email']
     flash('You are now logged out', 'confirm')
+    users = User.query.all()
     return redirect('/')
 
 
@@ -120,6 +118,7 @@ def logout():
 # MAIN PAGE -- DISPLAYS POSTS FROM ALL USERS
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    users = User.query.all()
     if 'email' in session:
         owner = User.query.filter_by(email=session['email']).first()
     else:
@@ -155,7 +154,10 @@ def drafts():
 # RENDERS INDIVIDUAL POST
 @app.route('/post', methods=['POST', 'GET'])
 def blogpost():
-    owner = User.query.filter_by(email=session['email']).first()
+    if 'email' in session:
+        owner = User.query.filter_by(email=session['email']).first()
+    else:
+        owner = ""
     post_id = request.args.get('id')
     post = Post.query.get(post_id)
     return render_template('post.html', pagetitle=post.title, 
